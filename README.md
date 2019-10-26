@@ -4,6 +4,18 @@ A super simple crystal version manager for MacOS
 
 ## Installation
 
+#### Quick Version
+
+download the `ball` binary
+
+`curl -fsSL https://raw.githubusercontent.com/kingsleyh/ball/master/ball > ball`
+
+set executable permissions and put on your path
+
+`chmod +x ./ball && cp ./ball /usr/local/bin`
+
+#### Longer Version
+
 clone this repository and run:
 
 `shards install && shards build --release --no-debug`
