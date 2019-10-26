@@ -1,30 +1,28 @@
-# ball
+# Crystal Ball
 
-TODO: Write a description here
+A super simple crystal version manager for MacOS
 
 ## Installation
 
-1. Add the dependency to your `shard.yml`:
+clone this repository and run:
 
-   ```yaml
-   dependencies:
-     ball:
-       github: your-github-user/ball
-   ```
+`shards install && shards build --release --no-debug`
 
-2. Run `shards install`
+Then copy the binary onto your path e.g.
+
+`cp bin/ball /usr/local/bin`
+
+For this app to work you must have `/usr/local/bin` on your path.
 
 ## Usage
 
-```crystal
-require "ball"
+```bash
+
+ball --show             # shows a list of install versions
+ball --install 0.30.1   # installs and uses the specified version
+ball --clean            # removes all installs and symlinks
+
 ```
-
-TODO: Write usage instructions here
-
-## Development
-
-TODO: Write development instructions here
 
 ## Contributing
 
@@ -36,4 +34,4 @@ TODO: Write development instructions here
 
 ## Contributors
 
-- [Kingsley Hendrickse](https://github.com/your-github-user) - creator and maintainer
+- [Kingsley Hendrickse](https://github.com/kingsleyh) - creator and maintainer
