@@ -45,8 +45,12 @@ end
 
 class CrystalVersion
   def self.switch_to_version(version)
-    process_version(version) unless has_local_version?(version)
-    write_links(version)
+    begin
+      process_version(version) unless has_local_version?(version)
+      write_links(version)
+    rescue e
+      puts "Error installing version: #{version} due to: #{e.message}"
+    end
   end
 
   def self.write_links(version)
@@ -62,12 +66,8 @@ class CrystalVersion
   end
 
   def self.process_version(version)
-    begin
       fetch_version(version)
       install_version(version)
-    rescue e
-      puts "Error installing version: #{version} due to: #{e.message}"
-    end
   end
 
   def self.fetch_version(version)
