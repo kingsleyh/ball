@@ -1,0 +1,17 @@
+name: ball
+version: 0.1.0
+
+authors:
+  - Kingsley Hendrickse <kingsley.hendrickse@gmail.com>
+
+dependencies:
+  crest:
+    github: mamantoha/crest
+
+targets:
+  ball:
+    main: src/ball.cr
+
+crystal: 0.30.1
+
+license: MIT
