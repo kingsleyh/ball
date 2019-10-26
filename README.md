@@ -14,6 +14,8 @@ Then copy the binary onto your path e.g.
 
 For this app to work you must have `/usr/local/bin` on your path.
 
+[![asciicast](https://asciinema.org/a/277155.svg)](https://asciinema.org/a/277155)
+
 ## Usage
 
 ```bash
