@@ -2,7 +2,11 @@ require "option_parser"
 require "file_utils"
 require "crest"
 
-TMP_DIR = "/usr/local/bin/c-tmp"
+HOME        = CrystalVersion.home
+ROOT_DIR    = "#{HOME}/.ball"
+TMP_DIR     = "#{ROOT_DIR}/tmp"
+INSTALL_DIR = "#{ROOT_DIR}/install"
+BIN_DIR     = "/usr/local/bin"
 
 version = ""
 
@@ -11,6 +15,7 @@ opts = OptionParser.parse! do |parser|
   parser.on("-s", "--show", "Shows the installed versions of crystal") { show_versions }
   parser.on("-i VERSION", "--install=VERSION", "Install and use the specified version of crystal") { |v| version = v }
   parser.on("-c", "--clean", "Remove installed versions tmp folder") { clean_versions }
+  parser.on("-v", "--version", "Ball version number") { puts "v0.0.1" }
   parser.on("-h", "--help", "Show this help") { puts parser }
   parser.invalid_option do |flag|
     STDERR.puts "ERROR: #{flag} is not a valid option."
@@ -21,21 +26,16 @@ end
 
 def show_versions
   puts "Showing versions:"
-  Dir.entries("/usr/local/bin").select{|f| f.starts_with?("c-")}.sort.each do |e|
-    puts e.split("-").last unless e.includes?("c-tmp")
+  FileUtils.mkdir_p(INSTALL_DIR) unless Dir.exists?(INSTALL_DIR)
+  Dir.entries(INSTALL_DIR).select { |f| f.starts_with?("c-") }.sort.each do |e|
+    puts e.split("-").last
   end
   exit(0)
 end
 
 def clean_versions
-    puts "cleaning versions"
-    removals = Dir.entries("/usr/local/bin").select{|f| f.starts_with?("c-")}.sort.map do |e|
-        "/usr/local/bin/#{e}"
-    end
-    `sudo rm -rf #{removals.join(" ")}`
-    puts "removing symlinks"
-    FileUtils.rm("/usr/local/bin/crystal")
-    FileUtils.rm("/usr/local/bin/shards")
+  puts "removing all versions and symlinks"
+  FileUtils.rm_rf(ROOT_DIR) if Dir.exists?(ROOT_DIR)
 end
 
 if version != ""
@@ -46,6 +46,7 @@ end
 class CrystalVersion
   def self.switch_to_version(version)
     begin
+      make_dirs
       process_version(version) unless has_local_version?(version)
       write_links(version)
     rescue e
@@ -53,26 +54,42 @@ class CrystalVersion
     end
   end
 
+  def self.user
+    `whoami`.strip
+  end
+
+  def self.home
+    "/Users/#{user}"
+  end
+
+  def self.group
+    `groups $(whoami)`.split(" ").first.strip
+  end
+
+  def self.make_dirs
+    FileUtils.mkdir_p(TMP_DIR) unless Dir.exists?(TMP_DIR)
+    FileUtils.mkdir_p(INSTALL_DIR) unless Dir.exists?(INSTALL_DIR)
+  end
+
   def self.write_links(version)
     puts "Linking version: #{version}"
-    FileUtils.rm("/usr/local/bin/crystal")
-    FileUtils.rm("/usr/local/bin/shards")
-    FileUtils.ln_sf("/usr/local/bin/c-#{version}/bin/crystal", "/usr/local/bin/crystal")
-    FileUtils.ln_sf("/usr/local/bin/c-#{version}/embedded/bin/shards", "/usr/local/bin/shards")
+    `rm #{BIN_DIR}/crystal`
+    `rm #{BIN_DIR}/shards`
+    FileUtils.ln_sf("#{INSTALL_DIR}/c-#{version}/bin/crystal", "#{BIN_DIR}/crystal")
+    FileUtils.ln_sf("#{INSTALL_DIR}/c-#{version}/embedded/bin/shards", "#{BIN_DIR}/shards")
   end
 
   def self.has_local_version?(version)
-    Dir.exists?("/usr/local/bin/c-#{version}")
+    Dir.exists?("#{INSTALL_DIR}/c-#{version}")
   end
 
   def self.process_version(version)
-      fetch_version(version)
-      install_version(version)
+    fetch_version(version)
+    install_version(version)
   end
 
   def self.fetch_version(version)
     puts "Fetching version: #{version}"
-    FileUtils.mkdir_p(TMP_DIR) unless Dir.exists?(TMP_DIR)
 
     Crest.get("https://github.com/crystal-lang/crystal/releases/download/#{version}/crystal-#{version}-1.pkg") do |resp|
       File.open("#{TMP_DIR}/crystal-#{version}-1.pkg", "w") do |file|
@@ -83,6 +100,7 @@ class CrystalVersion
 
   def self.install_version(version)
     puts "Installing version: #{version} via installer"
-    puts `sudo installer -pkg #{TMP_DIR}/crystal-#{version}-1.pkg -target / && sudo mv /opt/crystal /usr/local/bin/c-#{version}`
+    owner = "#{user}:#{group}"
+    puts `sudo installer -pkg #{TMP_DIR}/crystal-#{version}-1.pkg -target / && sudo mv /opt/crystal #{INSTALL_DIR}/c-#{version} && sudo chown -R #{owner} #{INSTALL_DIR}`
   end
 end
