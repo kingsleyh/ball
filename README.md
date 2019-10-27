@@ -24,7 +24,7 @@ Then copy the binary onto your path e.g.
 
 `cp bin/ball /usr/local/bin`
 
-For this app to work you must have `/usr/local/bin` on your path.
+For this app to work you must have `/usr/local/bin` on your path. The native crystal installer uses this path so it's convenient to stay in line that. 
 
 [![asciicast](https://asciinema.org/a/277155.svg)](https://asciinema.org/a/277155)
 
