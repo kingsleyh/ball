@@ -2,6 +2,18 @@
 
 A super simple crystal version manager for MacOS
 
+## Requirements
+
+You will need openssl 1.1 - the easiest way is to:
+
+```bash
+brew update
+brew install openssl@1.1
+echo 'export PATH="/usr/local/opt/openssl@1.1/bin:$PATH"' >> ~/.bash_profile
+# Verify 
+openssl version
+```
+
 ## Installation
 
 #### Quick Version
