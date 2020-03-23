@@ -1,6 +1,5 @@
 require "option_parser"
 require "file_utils"
-require "crest"
 
 HOME        = CrystalVersion.home
 ROOT_DIR    = "#{HOME}/.ball"
@@ -15,7 +14,7 @@ opts = OptionParser.parse! do |parser|
   parser.on("-s", "--show", "Shows the installed versions of crystal") { show_versions }
   parser.on("-i VERSION", "--install=VERSION", "Install and use the specified version of crystal") { |v| version = v }
   parser.on("-c", "--clean", "Remove installed versions tmp folder") { clean_versions }
-  parser.on("-v", "--version", "Ball version number") { puts "v0.0.1" }
+  parser.on("-v", "--version", "Ball version number") { puts "v0.1.2" }
   parser.on("-h", "--help", "Show this help") { puts parser }
   parser.invalid_option do |flag|
     STDERR.puts "ERROR: #{flag} is not a valid option."
@@ -90,12 +89,9 @@ class CrystalVersion
 
   def self.fetch_version(version)
     puts "Fetching version: #{version}"
-
-    Crest.get("https://github.com/crystal-lang/crystal/releases/download/#{version}/crystal-#{version}-1.pkg") do |resp|
-      File.open("#{TMP_DIR}/crystal-#{version}-1.pkg", "w") do |file|
-        IO.copy(resp.body_io, file)
-      end
-    end
+    url = "https://github.com/crystal-lang/crystal/releases/download/#{version}/crystal-#{version}-1.pkg"
+    dest = "#{TMP_DIR}/crystal-#{version}-1.pkg"
+    curl = `curl -L -s #{url} --output #{dest}`
   end
 
   def self.install_version(version)

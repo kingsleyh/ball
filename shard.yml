@@ -1,12 +1,8 @@
 name: ball
-version: 0.1.0
+version: 0.1.2
 
 authors:
   - Kingsley Hendrickse <kingsley.hendrickse@gmail.com>
-
-dependencies:
-  crest:
-    github: mamantoha/crest
 
 targets:
   ball:
