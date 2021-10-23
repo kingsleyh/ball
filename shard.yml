@@ -1,5 +1,5 @@
 name: ball
-version: 0.1.2
+version: 0.1.3
 
 authors:
   - Kingsley Hendrickse <kingsley.hendrickse@gmail.com>
@@ -8,6 +8,6 @@ targets:
   ball:
     main: src/ball.cr
 
-crystal: 0.30.1
+crystal: 1.2.1
 
 license: MIT

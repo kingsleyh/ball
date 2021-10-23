@@ -9,7 +9,7 @@ BIN_DIR     = "/usr/local/bin"
 
 version = ""
 
-opts = OptionParser.parse! do |parser|
+opts = OptionParser.parse do |parser|
   parser.banner = "Usage: ball --show | ball --install 0.30.1"
   parser.on("-s", "--show", "Shows the installed versions of crystal") { show_versions }
   parser.on("-i VERSION", "--install=VERSION", "Install and use the specified version of crystal") { |v| version = v }
@@ -89,14 +89,14 @@ class CrystalVersion
 
   def self.fetch_version(version)
     puts "Fetching version: #{version}"
-    url = "https://github.com/crystal-lang/crystal/releases/download/#{version}/crystal-#{version}-1.pkg"
-    dest = "#{TMP_DIR}/crystal-#{version}-1.pkg"
+    url = "https://github.com/crystal-lang/crystal/releases/download/#{version}/crystal-#{version}-1.universal.pkg"
+    dest = "#{TMP_DIR}/crystal-#{version}-1.universal.pkg"
     curl = `curl -L -s #{url} --output #{dest}`
   end
 
   def self.install_version(version)
     puts "Installing version: #{version} via installer"
     owner = "#{user}:#{group}"
-    puts `sudo installer -pkg #{TMP_DIR}/crystal-#{version}-1.pkg -target / && sudo mv /opt/crystal #{INSTALL_DIR}/c-#{version} && sudo chown -R #{owner} #{INSTALL_DIR}`
+    puts `sudo installer -pkg #{TMP_DIR}/crystal-#{version}-1.universal.pkg -target / && sudo mv /opt/crystal #{INSTALL_DIR}/c-#{version} && sudo chown -R #{owner} #{INSTALL_DIR}`
   end
 end
