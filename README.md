@@ -1,5 +1,7 @@
 # Crystal Ball
 
+[![macOS CI](https://github.com/kingsleyh/ball/actions/workflows/macos-ci.yml/badge.svg)](https://github.com/kingsleyh/ball/actions/workflows/macos-ci.yml)
+
 A super simple crystal version manager for MacOS
 
 ## Requirements
