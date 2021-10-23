@@ -4,6 +4,8 @@
 
 A super simple crystal version manager for MacOS
 
+**NOTE** The latest version only works for the universal packages which are crystal releases after 1.1.1
+
 ## Requirements
 
 You will need openssl 1.1 - the easiest way is to:
