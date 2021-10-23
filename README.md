@@ -24,7 +24,7 @@ openssl version
 
 download the `ball` binary
 
-`curl -fsSL https://raw.githubusercontent.com/kingsleyh/ball/master/ball > ball`
+`curl -fsSL https://github.com/kingsleyh/ball/releases/download/v0.1.3/ball-v0.1.3 > ball`
 
 set executable permissions and put on your path
 
