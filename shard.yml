@@ -8,6 +8,10 @@ targets:
   ball:
     main: src/ball.cr
 
+development_dependencies:
+  ameba:
+    github: veelenga/ameba
+
 crystal: 1.2.1
 
 license: MIT

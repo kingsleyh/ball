@@ -9,12 +9,12 @@ BIN_DIR     = "/usr/local/bin"
 
 version = ""
 
-opts = OptionParser.parse do |parser|
+OptionParser.parse do |parser|
   parser.banner = "Usage: ball --show | ball --install 0.30.1"
   parser.on("-s", "--show", "Shows the installed versions of crystal") { show_versions }
   parser.on("-i VERSION", "--install=VERSION", "Install and use the specified version of crystal") { |v| version = v }
   parser.on("-c", "--clean", "Remove installed versions tmp folder") { clean_versions }
-  parser.on("-v", "--version", "Ball version number") { puts "v0.1.2" }
+  parser.on("-v", "--version", "Ball version number") { puts "v0.1.3" }
   parser.on("-h", "--help", "Show this help") { puts parser }
   parser.invalid_option do |flag|
     STDERR.puts "ERROR: #{flag} is not a valid option."
@@ -26,7 +26,7 @@ end
 def show_versions
   puts "Showing versions:"
   FileUtils.mkdir_p(INSTALL_DIR) unless Dir.exists?(INSTALL_DIR)
-  Dir.entries(INSTALL_DIR).select { |f| f.starts_with?("c-") }.sort.each do |e|
+  Dir.entries(INSTALL_DIR).select(&.starts_with?("c-")).sort!.each do |e|
     puts e.split("-").last
   end
   exit(0)
@@ -44,13 +44,11 @@ end
 
 class CrystalVersion
   def self.switch_to_version(version)
-    begin
-      make_dirs
-      process_version(version) unless has_local_version?(version)
-      write_links(version)
-    rescue e
-      puts "Error installing version: #{version} due to: #{e.message}"
-    end
+    make_dirs
+    process_version(version) unless has_local_version?(version)
+    write_links(version)
+  rescue e
+    puts "Error installing version: #{version} due to: #{e.message}"
   end
 
   def self.user
@@ -91,7 +89,7 @@ class CrystalVersion
     puts "Fetching version: #{version}"
     url = "https://github.com/crystal-lang/crystal/releases/download/#{version}/crystal-#{version}-1.universal.pkg"
     dest = "#{TMP_DIR}/crystal-#{version}-1.universal.pkg"
-    curl = `curl -L -s #{url} --output #{dest}`
+    `curl -L -s #{url} --output #{dest}`
   end
 
   def self.install_version(version)
